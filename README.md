@@ -1,21 +1,11 @@
 git push -u origin main# ai-research-assistant-starter
 
-A minimal, production‑friendly starter for an **AI Research Assistant**. It wires together:
-
-- **Speech‑to‑Text (ASR)** — Whisper / Faster‑Whisper (GPU if available)
-- **Academic Retrieval** — arXiv search with snippet extraction
-- **LLM Summarization** — 🤗 Transformers pipeline (default: `facebook/bart-large-cnn`) with safe fallback
-- **Text‑to‑Speech (TTS)** — `pyttsx3` (Windows speak) or Piper → WAV on Linux/WSL
-- **HTTP API** — FastAPI endpoints: `/ask`, `/status`, `/notion-sync`
-- **Sessioning & Logging** — lightweight transcript and structured logs
-- **Optional Notion sync** — stub to push transcripts
-
-> Works great on **WSL + CUDA 12.x** (e.g., RTX 4070 SUPER) with Python 3.10 and Conda.  
-> On WSL, TTS exports to a WAV file; on native Windows Python, `pyttsx3` can speak directly.
+An end-to-end multimodal **AI Research Agent** that listens, retrieves, summarizes, and speaks.  
+Designed for rapid prototyping, technical demonstration, and job-ready GitHub pinning.
 
 ---
 
-## Why this repo
+## Overview
 
 - Clean structure suitable for pinning on your GitHub profile
 - Swappable components (ASR / Retriever / Summarizer / TTS)
@@ -27,14 +17,14 @@ A minimal, production‑friendly starter for an **AI Research Assistant**. It wi
 ## Quickstart
 
 ```bash
-# 0) Ensure NVIDIA driver & WSL GPU pass‑through (if using GPU)
+# 0) Verify GPU access (optional)
 nvidia-smi
 
 # 1) Create environment (Python 3.10)
 conda create -n research-assistant python=3.10 -y
 conda activate research-assistant
 
-# 2) System deps (Whisper needs FFmpeg)
+# 2) System deps (Whisper requires FFmpeg)
 sudo apt-get update && sudo apt-get install -y ffmpeg
 
 # 3) Install Python deps
@@ -42,16 +32,16 @@ pip install -r requirements.txt
 
 # 4) Run API
 uvicorn app:app --reload --port 8000
-```
+
 
 **Try it**
 
-- Text:
+- Text query:
   ```bash
   curl -X POST http://localhost:8000/ask        -H "Content-Type: application/json"        -d '{"query":"Summarize recent advances in retrieval-augmented generation."}'
   ```
 
-- Audio (WAV/MP3):
+- Audio (WAV/MP3) query:
   ```bash
   curl -X POST "http://localhost:8000/ask" -F "audio_file=@input.wav"
   ```
@@ -59,6 +49,25 @@ uvicorn app:app --reload --port 8000
 Response includes: `answer`, `citations` (arXiv IDs), and `tts_wav` (path to WAV file if generated).
 
 ---
+
+## Agent Architecture
+
+This project functions as a lightweight AI Research Agent, coordinating several cognitive tools through a reasoning loop:
+
+```rust
+User → ASR (Whisper/Faster-Whisper) → arXiv Retriever → LLM Summarizer → TTS / Notion Sync
+```
+
+Each module operates as an independent agent skill, orchestrated by the FastAPI controller (app.py).
+Together they emulate perception (listening), reasoning (retrieval + summarization), and action (text/voice response).
+
+The system can be easily extended with:
+
+Memory (e.g., SQLite or vector store for multi-turn context)
+
+Advanced orchestration using LangChain, LangGraph, or function-calling frameworks
+
+External integrations (Notion, Slack, or custom research APIs)
 
 ## Configuration
 
@@ -98,10 +107,10 @@ ai-research-assistant-starter/
 
 ## Technical Verification (available upon request)
 
-A compact **verification bundle** (script + fixtures) can be shared privately to validate:
-- ASR is functional with a sample audio clip (Whisper / Faster‑Whisper)
+A compact **verification bundle** (script + fixtures) can be shared privately to confirm:
+- ASR is functional with a reference sample audio clip (Whisper / Faster‑Whisper)
 - Retrieval returns deterministic arXiv results for a fixed query
-- Summarizer produces a non‑empty answer within expected latency bounds
+- Summarizer produces a valid non‑empty answer within expected latency bounds
 - TTS generates a playable WAV file (Linux/WSL) or speaks via `pyttsx3` (Windows)
 - API contract: `/ask` responds with `answer`, `citations`, and `tts_wav`
 
@@ -111,9 +120,9 @@ A compact **verification bundle** (script + fixtures) can be shared privately to
 
 ## Notes
 
-- On **WSL**, audio playback is handled by exporting WAV; you can play with `ffplay` or copy to Windows.
-- For speed, you may switch the summarizer to a smaller model (e.g., `sshleifer/distilbart-cnn-12-6`).
-- Retrieval is abstracted; swap arXiv with your own corpus or a vector database later.
+- On WSL, play WAV responses using ffplay or transfer them to Windows for playback.
+- Swap in smaller summarizer models (e.g., sshleifer/distilbart-cnn-12-6) for faster inference.
+- Retrieval is modular — integrate vector databases (Chroma, FAISS) for richer results.
 
 ---
 
