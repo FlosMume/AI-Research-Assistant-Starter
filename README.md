@@ -32,7 +32,7 @@ pip install -r requirements.txt
 
 # 4) Run API
 uvicorn app:app --reload --port 8000
-
+```
 
 **Try it**
 
