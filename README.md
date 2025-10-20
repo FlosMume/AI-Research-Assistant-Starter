@@ -105,7 +105,7 @@ A compact **verification bundle** (script + fixtures) can be shared privately to
 - TTS generates a playable WAV file (Linux/WSL) or speaks via `pyttsx3` (Windows)
 - API contract: `/ask` responds with `answer`, `citations`, and `tts_wav`
 
-> For reviewers or hiring teams: request the verification pack to reproduce results quickly without exposing private assets.
+> For reviewers: request the verification pack to reproduce results quickly without exposing private assets.
 
 ---
 
