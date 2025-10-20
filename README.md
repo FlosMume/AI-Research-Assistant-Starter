@@ -1,4 +1,4 @@
-# ai-research-assistant-starter
+git push -u origin main# ai-research-assistant-starter
 
 A minimal, production‑friendly starter for an **AI Research Assistant**. It wires together:
 
@@ -17,7 +17,7 @@ A minimal, production‑friendly starter for an **AI Research Assistant**. It wi
 
 ## Why this repo
 
-- Clean, interview‑ready structure suitable for pinning on your GitHub profile
+- Clean structure suitable for pinning on your GitHub profile
 - Swappable components (ASR / Retriever / Summarizer / TTS)
 - Small, readable codebase with a simple test to validate imports
 - No proprietary assets or heavy data included
